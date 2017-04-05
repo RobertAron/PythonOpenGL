@@ -6,6 +6,7 @@ from View import *
 
 myController = MyController()
 myController.loadCameraFromMultiFile('cameras_05.txt')
+myController.loadModel('./inputFiles/teapot.txt')
 myView = MyView(myController)
 
 
@@ -14,17 +15,25 @@ myView = MyView(myController)
 
 
 glutInit(sys.argv)
-glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGB)
-glutCreateWindow(b"PyOpenGL Demo")
-glutDisplayFunc(myView.display())
+glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGB|GLUT_DEPTH)
+glutInitWindowSize(640, 640)
+glutInitWindowPosition(100, 100)
+glutCreateWindow(b"Hayes_Assignment_05")
+glClearColor(1,0,0,0)
+glPolygonMode(GL_FRONT_AND_BACK,GL_FILL)
+glEnable(GL_DEPTH_TEST)
+glDepthFunc(GL_LESS);
+
+lambdaDisp = lambda : myView.display()
 
 
-glMatrixMode(GL_PROJECTION)
-glLoadIdentity()
-glOrtho(-1,1,-1,1,1,30)
-gluLookAt(0,0,10,0,0,0,0,1,0)
-glMatrixMode(GL_MODELVIEW)
-glLoadIdentity()
+glutDisplayFunc(lambdaDisp)
+
+
+
+
+
+
 glutMainLoop()
 
 

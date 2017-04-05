@@ -1,4 +1,8 @@
-
+import sys
+import OpenGL
+from OpenGL.GL import *     
+from OpenGL.GLU import *    
+from OpenGL.GLUT import *
 
 
 class Model:
@@ -42,3 +46,5 @@ class Model:
     def nonuniform_scale(self,x_scale,y_scale,z_scale):
         for i in range(len(self.verticies)):
             self.verticies[i] = [self.verticies[i][0]*x_scale,self.verticies[i][1]*y_scale,self.verticies[i][2]*z_scale]
+
+
