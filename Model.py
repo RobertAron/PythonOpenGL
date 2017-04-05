@@ -8,6 +8,7 @@ from OpenGL.GLUT import *
 class Model:
     def __init__(self,filePath):
         #read the file and put information into correct places
+        print("loading model")
         self.verticies = []
         self.triangles = []
         f = open(filePath, 'r')

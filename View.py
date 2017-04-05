@@ -18,6 +18,7 @@ class MyView:
     def display(self):
         #create model must be called from the display function?
         #Don't completely understand openGL logic
+        print("display call")
         self.controllerReference.createModel()
         w=glutGet(GLUT_WINDOW_WIDTH)
         h=glutGet(GLUT_WINDOW_HEIGHT)

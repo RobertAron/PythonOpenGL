@@ -24,10 +24,13 @@ glPolygonMode(GL_FRONT_AND_BACK,GL_FILL)
 glEnable(GL_DEPTH_TEST)
 glDepthFunc(GL_LESS)
 
+
+
+
 lambdaDisp = lambda : myView.display()
-
-
-glutDisplayFunc(lambdaDisp)
+glutDisplayFunc(myView.display)
+lambdaKey = lambda : myController.keyHandler(x,y,z)
+glutKeyboardFunc(myController.keyHandler)
 
 
 

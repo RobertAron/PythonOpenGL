@@ -1,5 +1,6 @@
 from Model import *
 from Camera import *
+from tkinter import filedialog
 
 
 
@@ -111,3 +112,4 @@ class MyController:
             self.modelPath = browsedFile
         elif Key ==b'd':
             self.loadModel()
+            self.loadCameraFromMultiFile()
