@@ -5,8 +5,8 @@ from View import *
 
 
 myController = MyController()
-myController.loadCameraFromMultiFile('cameras_05.txt')
-myController.loadModel('./inputFiles/teapot.txt')
+myController.loadCameraFromMultiFile()
+myController.loadModel()
 myView = MyView(myController)
 
 
@@ -22,7 +22,7 @@ glutCreateWindow(b"Hayes_Assignment_05")
 glClearColor(1,0,0,0)
 glPolygonMode(GL_FRONT_AND_BACK,GL_FILL)
 glEnable(GL_DEPTH_TEST)
-glDepthFunc(GL_LESS);
+glDepthFunc(GL_LESS)
 
 lambdaDisp = lambda : myView.display()
 

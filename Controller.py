@@ -7,15 +7,17 @@ class MyController:
     def __init__(self):
         self.model = None
         self.cameras = None
+        self.modelPath = './inputFiles/teapot.txt'
+        self.cameraPath = 'cameras_05.txt'
 
 
 
-    def loadModel(self,modelFileLocation):
-        self.model= Model(modelFileLocation)
+    def loadModel(self):
+        self.model= Model(self.modelPath)
         return self.model
     
-    def loadCameraFromMultiFile(self,fileLocation):
-        self.cameras = Camera.loadMultiCameraFile(fileLocation)
+    def loadCameraFromMultiFile(self):
+        self.cameras = Camera.loadMultiCameraFile(self.cameraPath)
 
         
     def rotationCall(self,rotationType,canvas,rotationSteps,rotationTheta):
@@ -99,4 +101,13 @@ class MyController:
         self.rootWidget.after(200,lambda: self.flyCallAction(xChange,yChange,zChange,remainingSteps,canvasReference))
 
     def createModel(self):
-        self.model.create_model()
+        if self.model != None:
+            self.model.create_model()
+
+    def keyHandler(self,Key,MouseX,MouseY):
+        print('keyHandler')
+        if Key == b'n':
+            browsedFile = filedialog.askopenfilename(filetypes=[("allfiles", "*"), ("pythonfiles", "*.txt")])
+            self.modelPath = browsedFile
+        elif Key ==b'd':
+            self.loadModel()
