@@ -48,3 +48,22 @@ class Model:
             self.verticies[i] = [self.verticies[i][0]*x_scale,self.verticies[i][1]*y_scale,self.verticies[i][2]*z_scale]
 
 
+    def create_model(self):
+        #drawModel = self.controllerReference.model
+        drawModel = self
+        #Draw the item
+        glNewList(1,GL_COMPILE)
+        #alternatively GL_POLYGON or GL_POINTS
+        glBegin(GL_TRIANGLES)
+        for triangle in drawModel.triangles:
+            glVertex3f(drawModel.verticies[triangle[0]-1][0],
+                        drawModel.verticies[triangle[0]-1][1],
+                        drawModel.verticies[triangle[0]-1][2])
+            glVertex3f(drawModel.verticies[triangle[1]-1][0],
+                        drawModel.verticies[triangle[1]-1][1],
+                        drawModel.verticies[triangle[1]-1][2])
+            glVertex3f(drawModel.verticies[triangle[2]-1][0],
+                        drawModel.verticies[triangle[2]-1][1],
+                        drawModel.verticies[triangle[2]-1][2])
+        glEnd()
+        glEndList()

@@ -12,30 +12,12 @@ class MyView:
         self.controllerReference = controllerReference
 
     #TODO find out how to move this to the model class
-    def create_model(self):
-        drawModel = self.controllerReference.model
 
-        #Draw the item
-        glNewList(1,GL_COMPILE)
-        #alternatively GL_POLYGON or GL_POINTS
-        glBegin(GL_TRIANGLES)
-        for triangle in drawModel.triangles:
-            glVertex3f(drawModel.verticies[triangle[0]-1][0],
-                        drawModel.verticies[triangle[0]-1][1],
-                        drawModel.verticies[triangle[0]-1][2])
-            glVertex3f(drawModel.verticies[triangle[1]-1][0],
-                        drawModel.verticies[triangle[1]-1][1],
-                        drawModel.verticies[triangle[1]-1][2])
-            glVertex3f(drawModel.verticies[triangle[2]-1][0],
-                        drawModel.verticies[triangle[2]-1][1],
-                        drawModel.verticies[triangle[2]-1][2])
-        glEnd()
-        glEndList()
 
 
     def display(self):
         drawModel = self.controllerReference.model
-        self.create_model()
+        drawModel.create_model()
         w=glutGet(GLUT_WINDOW_WIDTH)
         h=glutGet(GLUT_WINDOW_HEIGHT)
         for camera in self.controllerReference.cameras:
