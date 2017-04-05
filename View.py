@@ -11,13 +11,14 @@ class MyView:
     def __init__(self,controllerReference):
         self.controllerReference = controllerReference
 
-    #TODO find out how to move this to the model class
+
 
 
 
     def display(self):
-        drawModel = self.controllerReference.model
-        drawModel.create_model()
+        #create model must be called from the display function?
+        #Don't completely understand openGL logic
+        self.controllerReference.createModel()
         w=glutGet(GLUT_WINDOW_WIDTH)
         h=glutGet(GLUT_WINDOW_HEIGHT)
         for camera in self.controllerReference.cameras:

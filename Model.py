@@ -20,10 +20,12 @@ class Model:
                     self.verticies.append([float(splitLine[1]),float(splitLine[2]),float(splitLine[3])])
                 if splitLine[0]== "f":
                     self.triangles.append([int(splitLine[1]),int(splitLine[2]),int(splitLine[3])])
+
         except IOError as e:
             print ("could not read Model error")
         finally:
             f.close()
+
 
     def rotate_X(self,theta):
         for i in range(len(self.verticies)):

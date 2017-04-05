@@ -97,3 +97,6 @@ class MyController:
         canvasReference.draw_Model(self.model,self.cameras)
         remainingSteps = remainingSteps-1
         self.rootWidget.after(200,lambda: self.flyCallAction(xChange,yChange,zChange,remainingSteps,canvasReference))
+
+    def createModel(self):
+        self.model.create_model()
