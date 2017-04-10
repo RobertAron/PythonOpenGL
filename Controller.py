@@ -1,5 +1,6 @@
 from Model import *
 from Camera import *
+from tkinter import *
 from tkinter import filedialog
 
 
@@ -10,6 +11,10 @@ class MyController:
         self.cameras = None
         self.modelPath = './inputFiles/teapot.txt'
         self.cameraPath = 'cameras_05.txt'
+        self._FIVE_RADIAN = 0.0174533
+        self.view = None
+        rootWidget = Tk()
+        rootWidget.withdraw()
 
 
 
@@ -104,6 +109,7 @@ class MyController:
     def createModel(self):
         if self.model != None:
             self.model.create_model()
+            self.model.create_3d_axes()
 
     def keyHandler(self,Key,MouseX,MouseY):
         print('keyHandler')
@@ -113,3 +119,41 @@ class MyController:
         elif Key ==b'd':
             self.loadModel()
             self.loadCameraFromMultiFile()
+        elif Key ==b'x':
+            self.model.rotate_X(self._FIVE_RADIAN)
+        elif Key ==b'X':
+            self.model.rotate_X(-self._FIVE_RADIAN)
+        elif Key ==b'y':
+            self.model.rotate_Y(self._FIVE_RADIAN)
+        elif Key ==b'Y':
+            self.model.rotate_Y(-self._FIVE_RADIAN)
+        elif Key ==b'z':
+            self.model.rotate_Z(self._FIVE_RADIAN)
+        elif Key ==b'Z':
+            self.model.rotate_Z(-self._FIVE_RADIAN)
+        elif Key ==b's':
+            self.model.nonuniform_scale(1.05)
+        elif Key ==b'S':
+            self.model.nonuniform_scale(1/1.05)
+        elif Key ==b'f':
+            for camera in self.cameras:
+                camera.moveEyeTowardsLookat(0.05)
+        elif Key ==b'b':
+            for camera in self.cameras:
+                camera.moveEyeTowardsLookat(-0.05/1.05)
+        elif Key == GLUT_KEY_LEFT:
+            for camera in self.cameras:
+                camera.moveCameraU(0.05)
+        elif Key == GLUT_KEY_RIGHT:
+            for camera in self.cameras:
+                camera.moveCameraU(-0.05)
+        elif Key == GLUT_KEY_UP:
+            for camera in self.cameras:
+                camera.moveCameraV(0.05)
+        elif Key == GLUT_KEY_DOWN:
+            for camera in self.cameras:
+                camera.moveCameraV(-0.05)
+        elif Key == b'p':
+            for camera in self.cameras:
+                camera.switchViewStyle()
+        self.view.display()

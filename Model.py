@@ -3,6 +3,7 @@ import OpenGL
 from OpenGL.GL import *     
 from OpenGL.GLU import *    
 from OpenGL.GLUT import *
+import math
 
 
 class Model:
@@ -70,3 +71,24 @@ class Model:
                         drawModel.verticies[triangle[2]-1][2])
         glEnd()
         glEndList()
+
+    def create_3d_axes(self):
+        glNewList(2,GL_COMPILE)
+        glBegin(GL_LINES)
+        glColor3f(1,0,0)
+        glVertex3f(0,0,0)
+        glVertex3f(2,0,0)
+        glEnd() 
+        
+        glBegin(GL_LINES)
+        glColor3f(0,1,0)
+        glVertex3f(0,0,0)
+        glVertex3f(0,2,0)
+        glEnd() 
+        
+        glBegin(GL_LINES)
+        glColor3f(0,0,1)
+        glVertex3f(0,0,0)
+        glVertex3f(0,0,2)
+        glEnd() 
+        glEndList()    

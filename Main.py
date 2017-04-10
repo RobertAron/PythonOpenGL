@@ -8,6 +8,7 @@ myController = MyController()
 myController.loadCameraFromMultiFile()
 myController.loadModel()
 myView = MyView(myController)
+myController.view = myView
 
 
 
@@ -27,10 +28,9 @@ glDepthFunc(GL_LESS)
 
 
 
-lambdaDisp = lambda : myView.display()
 glutDisplayFunc(myView.display)
-lambdaKey = lambda : myController.keyHandler(x,y,z)
 glutKeyboardFunc(myController.keyHandler)
+glutSpecialFunc(myController.keyHandler)
 
 
 

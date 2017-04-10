@@ -1,5 +1,6 @@
 from enum import Enum
 import os
+import math
 
 class CameraType(Enum):
     PARALLEL = 0
@@ -73,3 +74,36 @@ class Camera:
             print("could not read Camera Error")
         finally:
             f.close()
+
+
+
+    def moveEyeTowardsLookat(self,distance):
+        print("eye:"+str(self.eye))
+        print("look at:"+str(self.lookAt))
+        #find the direction we need to move
+        vectorEyeLookat = [self.lookAt[0]-self.eye[0],self.lookAt[1]-self.eye[1],self.lookAt[2]-self.eye[2]]
+        #find the normalized vector based on the distance
+        lengthOfVector =  math.pow(vectorEyeLookat[0],2)+math.pow(vectorEyeLookat[1],2)+math.pow(vectorEyeLookat[2],2)
+        lengthOfVector = math.sqrt(lengthOfVector)
+
+        #scale by...
+        scaleDistance = distance/lengthOfVector
+        print("SCALE DISTANCE:"+str(scaleDistance))
+        #vector movement
+        changeEachElementBy = [vectorEyeLookat[0]*scaleDistance,vectorEyeLookat[1]*scaleDistance,vectorEyeLookat[2]*scaleDistance]
+        self.eye = [self.eye[0]+changeEachElementBy[0],self.eye[1]+changeEachElementBy[1],self.eye[2]+changeEachElementBy[2]]
+        print("new eye:"+str(self.eye))
+
+
+
+        
+    def moveCameraU(self,distance):
+        self.eye = [self.eye[0]+distance,self.eye[1],self.eye[2]]
+
+    def moveCameraV(self,distance):
+        self.eye = [self.eye[0],self.eye[1]+distance,self.eye[2]]
+    def switchViewStyle(self):
+        if (self.type == CameraType.PARALLEL):
+            self.type = CameraType.PERSPECTIVE
+        else:
+            self.type = CameraType.PARALLEL

@@ -56,6 +56,9 @@ class MyView:
                       int((camera.viewPort[3]-camera.viewPort[1])*h))
             glCallList(1)
 
+            #this load in axis lines
+            glCallList(2)
+
 
         glFlush()
         glutSwapBuffers()
