@@ -4,6 +4,7 @@ from OpenGL.GL import *
 from OpenGL.GLU import *    
 from OpenGL.GLUT import *
 import math
+import random
 
 
 class Model:
@@ -12,6 +13,7 @@ class Model:
         print("loading model")
         self.verticies = []
         self.triangles = []
+        self.colors = []
         f = open(filePath, 'r')
         try:
             for line in f:
@@ -21,7 +23,24 @@ class Model:
                 if splitLine[0]== "v":
                     self.verticies.append([float(splitLine[1]),float(splitLine[2]),float(splitLine[3])])
                 if splitLine[0]== "f":
-                    self.triangles.append([int(splitLine[1]),int(splitLine[2]),int(splitLine[3])])
+                    triangle = []
+                    color1 = []
+                    color2 = []
+                    color3 = []
+
+                    #generate some colors for the pot
+                    #currently random
+                    color1 = random.uniform(0,1)
+                    color2 = random.uniform(0,1)
+                    color3 = random.uniform(0,1)
+                    self.colors.append([color1,color2,color3])
+
+
+
+                    #add the vectexes to the path
+                    for index in range(1,len(splitLine)):
+                        triangle.append(int(splitLine[index])-1)
+                    self.triangles.append(triangle)
 
         except IOError as e:
             print ("could not read Model error")
@@ -58,19 +77,44 @@ class Model:
         #Draw the item
         glNewList(1,GL_COMPILE)
         #alternatively GL_POLYGON or GL_POINTS
-        glBegin(GL_TRIANGLES)
-        for triangle in drawModel.triangles:
-            glVertex3f(drawModel.verticies[triangle[0]-1][0],
-                        drawModel.verticies[triangle[0]-1][1],
-                        drawModel.verticies[triangle[0]-1][2])
-            glVertex3f(drawModel.verticies[triangle[1]-1][0],
-                        drawModel.verticies[triangle[1]-1][1],
-                        drawModel.verticies[triangle[1]-1][2])
-            glVertex3f(drawModel.verticies[triangle[2]-1][0],
-                        drawModel.verticies[triangle[2]-1][1],
-                        drawModel.verticies[triangle[2]-1][2])
+        if(len(drawModel.triangles[0])==3):
+            glBegin(GL_TRIANGLES)
+            for index in range(len(drawModel.triangles)):
+                triangle = drawModel.triangles[index]
+                color = self.colors[index]
+                glColor3f(color[0],color[1],color[2])
+                glVertex3f(drawModel.verticies[triangle[0]][0],
+                            drawModel.verticies[triangle[0]][1],
+                            drawModel.verticies[triangle[0]][2])
+                glVertex3f(drawModel.verticies[triangle[1]][0],
+                            drawModel.verticies[triangle[1]][1],
+                            drawModel.verticies[triangle[1]][2])
+                glVertex3f(drawModel.verticies[triangle[2]][0],
+                            drawModel.verticies[triangle[2]][1],
+                            drawModel.verticies[triangle[2]][2])
+
+        else:
+            glBegin(GL_QUADS)
+            for index in range(len(drawModel.triangles)):
+                triangle = drawModel.triangles[index]
+                color = self.colors[index]
+                glColor3f(color[0],color[1],color[2])
+                glVertex3f(drawModel.verticies[triangle[0]][0],
+                            drawModel.verticies[triangle[0]][1],
+                            drawModel.verticies[triangle[0]][2])
+                glVertex3f(drawModel.verticies[triangle[1]][0],
+                            drawModel.verticies[triangle[1]][1],
+                            drawModel.verticies[triangle[1]][2])
+                glVertex3f(drawModel.verticies[triangle[2]][0],
+                            drawModel.verticies[triangle[2]][1],
+                            drawModel.verticies[triangle[2]][2])
+                glVertex3f(drawModel.verticies[triangle[3]][0],
+                            drawModel.verticies[triangle[3]][1],
+                            drawModel.verticies[triangle[3]][2])
+
         glEnd()
         glEndList()
+
 
     def create_3d_axes(self):
         glNewList(2,GL_COMPILE)
