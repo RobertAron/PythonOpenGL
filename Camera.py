@@ -146,15 +146,11 @@ class Camera:
         vvec = np.cross(nvec,uvec)
 
         #scale vvec
-        vvec = [vvec[0]*distance,
-                vvec[1]*distance,
-                vvec[2]*distance]
         lengthOfVvec = math.pow(vvec[0],2)+math.pow(vvec[1],2)+math.pow(vvec[2],2)
         lengthOfVvec = math.sqrt(lengthOfVvec)
         vvec = [vvec[0]/lengthOfVvec,
                 vvec[1]/lengthOfVvec,
                 vvec[2]/lengthOfVvec]
-
         self.eye = [self.eye[0]+vvec[0]*distance,
                     self.eye[1]+vvec[1]*distance,
                     self.eye[2]+vvec[2]*distance]
