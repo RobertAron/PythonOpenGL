@@ -111,7 +111,6 @@ class MyController:
             self.model.create_3d_axes()
 
     def keyHandler(self,Key,MouseX,MouseY):
-        print('keyHandler')
         if Key == b'n':
             browsedFile = filedialog.askopenfilename(filetypes=[("allfiles", "*"), ("pythonfiles", "*.txt")])
             self.modelPath = browsedFile
