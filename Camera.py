@@ -1,6 +1,7 @@
 from enum import Enum
 import os
 import math
+import numpy as np
 
 class CameraType(Enum):
     PARALLEL = 0
@@ -42,7 +43,7 @@ class Camera:
                 if splitLine[0] == "l":
                     self.lookAt = [float(splitLine[1]),float(splitLine[2]),float(splitLine[3])]
                 if splitLine[0] == "u":
-                    self.vup == [float(splitLine[1]),float(splitLine[2]),float(splitLine[3])]
+                    self.vup = [float(splitLine[1]),float(splitLine[2]),float(splitLine[3])]
                 if splitLine[0] == "w":
                     self.vrc = [float(splitLine[1]),float(splitLine[2]),float(splitLine[3]),float(splitLine[4]),float(splitLine[5]),float(splitLine[6])]
                 if splitLine[0] == "s":
@@ -78,8 +79,6 @@ class Camera:
 
 
     def moveEyeTowardsLookat(self,distance):
-        print("eye:"+str(self.eye))
-        print("look at:"+str(self.lookAt))
         #find the direction we need to move
         vectorEyeLookat = [self.lookAt[0]-self.eye[0],self.lookAt[1]-self.eye[1],self.lookAt[2]-self.eye[2]]
         #find the normalized vector based on the distance
@@ -88,20 +87,81 @@ class Camera:
 
         #scale by...
         scaleDistance = distance/lengthOfVector
-        print("SCALE DISTANCE:"+str(scaleDistance))
         #vector movement
         changeEachElementBy = [vectorEyeLookat[0]*scaleDistance,vectorEyeLookat[1]*scaleDistance,vectorEyeLookat[2]*scaleDistance]
         self.eye = [self.eye[0]+changeEachElementBy[0],self.eye[1]+changeEachElementBy[1],self.eye[2]+changeEachElementBy[2]]
-        print("new eye:"+str(self.eye))
 
 
 
         
     def moveCameraU(self,distance):
-        self.eye = [self.eye[0]+distance,self.eye[1],self.eye[2]]
+        #get distance from eyepoint to lookat
+        vectorEyeLookat = [self.lookAt[0]-self.eye[0],self.lookAt[1]-self.eye[1],self.lookAt[2]-self.eye[2]]
+        #find the normalized vector based on the distance
+        lengthOfVector =  math.pow(vectorEyeLookat[0],2)+math.pow(vectorEyeLookat[1],2)+math.pow(vectorEyeLookat[2],2)
+        lengthOfVector = math.sqrt(lengthOfVector)
+
+        nvec = [vectorEyeLookat[0]/lengthOfVector,
+                vectorEyeLookat[1]/lengthOfVector,
+                vectorEyeLookat[2]/lengthOfVector]
+
+        
+
+        #find uvec
+        uvec = np.cross(nvec,self.vup)
+
+        #scale uvec
+        uvec = [uvec[0]*distance,
+                uvec[1]*distance,
+                uvec[2]*distance]
+
+
+        #update eye
+        self.eye = [self.eye[0]+uvec[0],
+                    self.eye[1]+uvec[1],
+                    self.eye[2]+uvec[2]]
+
+
 
     def moveCameraV(self,distance):
-        self.eye = [self.eye[0],self.eye[1]+distance,self.eye[2]]
+        #get distance from eyepoint to lookat
+        #get distance from eyepoint to lookat
+        vectorEyeLookat = [self.lookAt[0]-self.eye[0],self.lookAt[1]-self.eye[1],self.lookAt[2]-self.eye[2]]
+        #find the normalized vector based on the distance
+        lengthOfVector =  math.pow(vectorEyeLookat[0],2)+math.pow(vectorEyeLookat[1],2)+math.pow(vectorEyeLookat[2],2)
+        lengthOfVector = math.sqrt(lengthOfVector)
+
+        nvec = [vectorEyeLookat[0]/lengthOfVector,
+                vectorEyeLookat[1]/lengthOfVector,
+                vectorEyeLookat[2]/lengthOfVector]
+
+        #find uvec
+        uvec = np.cross(nvec,self.vup)
+        lengthOfUvec = math.pow(uvec[0],2)+math.pow(uvec[1],2)+math.pow(uvec[2],2)
+        lengthOfUvec = math.sqrt(lengthOfUvec)
+        uvec = [uvec[0]/lengthOfUvec,
+                uvec[1]/lengthOfUvec,
+                uvec[2]/lengthOfUvec]
+        #find new vvec
+        vvec = np.cross(nvec,uvec)
+
+        #scale vvec
+        vvec = [vvec[0]*distance,
+                vvec[1]*distance,
+                vvec[2]*distance]
+        lengthOfVvec = math.pow(vvec[0],2)+math.pow(vvec[1],2)+math.pow(vvec[2],2)
+        lengthOfVvec = math.sqrt(lengthOfVvec)
+        vvec = [vvec[0]/lengthOfVvec,
+                vvec[1]/lengthOfVvec,
+                vvec[2]/lengthOfVvec]
+
+        self.eye = [self.eye[0]+vvec[0]*distance,
+                    self.eye[1]+vvec[1]*distance,
+                    self.eye[2]+vvec[2]*distance]
+
+
+
+
     def switchViewStyle(self):
         if (self.type == CameraType.PARALLEL):
             self.type = CameraType.PERSPECTIVE

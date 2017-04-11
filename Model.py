@@ -10,10 +10,11 @@ import random
 class Model:
     def __init__(self,filePath):
         #read the file and put information into correct places
-        print("loading model")
         self.verticies = []
         self.triangles = []
         self.colors = []
+        self.scale = [1,1,1]
+        self.rotate = [0,0,0]
         f = open(filePath, 'r')
         try:
             for line in f:
@@ -49,17 +50,20 @@ class Model:
 
 
     def rotate_X(self,theta):
-        for i in range(len(self.verticies)):
-            self.verticies[i] = [self.verticies[i][0],self.verticies[i][1]*math.cos(theta)-self.verticies[i][2]*math.sin(theta),self.verticies[i][1]*math.sin(theta)+self.verticies[i][2]*math.cos(theta)]
+        self.rotate[0]+=theta
+        #for i in range(len(self.verticies)):
+        #    self.verticies[i] = [self.verticies[i][0],self.verticies[i][1]*math.cos(theta)-self.verticies[i][2]*math.sin(theta),self.verticies[i][1]*math.sin(theta)+self.verticies[i][2]*math.cos(theta)]
 
     def rotate_Y(self,theta):
-        for i in range(len(self.verticies)):
-            self.verticies[i] = [self.verticies[i][0]*math.cos(theta)+self.verticies[i][2]*math.sin(theta),self.verticies[i][1],-self.verticies[i][0]*math.sin(theta)+self.verticies[i][2]*math.cos(theta)]
+        self.rotate[1]+=theta
+        #for i in range(len(self.verticies)):
+        #    self.verticies[i] = [self.verticies[i][0]*math.cos(theta)+self.verticies[i][2]*math.sin(theta),self.verticies[i][1],-self.verticies[i][0]*math.sin(theta)+self.verticies[i][2]*math.cos(theta)]
 
 
     def rotate_Z(self,theta):
-        for i in range(len(self.verticies)):
-            self.verticies[i] = [self.verticies[i][0]*math.cos(theta)-self.verticies[i][1]*math.sin(theta),self.verticies[i][0]*math.sin(theta)+self.verticies[i][1]*math.cos(theta),self.verticies[i][2]]
+        self.rotate[2] += theta
+        #for i in range(len(self.verticies)):
+        #    self.verticies[i] = [self.verticies[i][0]*math.cos(theta)-self.verticies[i][1]*math.sin(theta),self.verticies[i][0]*math.sin(theta)+self.verticies[i][1]*math.cos(theta),self.verticies[i][2]]
 
 
     def translate(self,x,y,z):
@@ -67,8 +71,11 @@ class Model:
             self.verticies[i] = [self.verticies[i][0]+x,self.verticies[i][1]+y,self.verticies[i][2]+z]
 
     def nonuniform_scale(self,x_scale,y_scale,z_scale):
-        for i in range(len(self.verticies)):
-            self.verticies[i] = [self.verticies[i][0]*x_scale,self.verticies[i][1]*y_scale,self.verticies[i][2]*z_scale]
+        self.scale = [self.scale[0]*x_scale,
+                      self.scale[1]*y_scale,
+                      self.scale[2]*z_scale]
+        #for i in range(len(self.verticies)):
+        #    self.verticies[i] = [self.verticies[i][0]*x_scale,self.verticies[i][1]*y_scale,self.verticies[i][2]*z_scale]
 
 
     def create_model(self):
@@ -77,6 +84,11 @@ class Model:
         #Draw the item
         glNewList(1,GL_COMPILE)
         #alternatively GL_POLYGON or GL_POINTS
+        glRotatef(self.rotate[0],1,0,0)
+        glRotatef(self.rotate[1],0,1,0)
+        glRotatef(self.rotate[2],0,0,1)
+        glScalef(self.scale[0],self.scale[1],self.scale[2])
+
         if(len(drawModel.triangles[0])==3):
             glBegin(GL_TRIANGLES)
             for index in range(len(drawModel.triangles)):

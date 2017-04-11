@@ -11,7 +11,6 @@ class MyController:
         self.cameras = None
         self.modelPath = './inputFiles/teapot.txt'
         self.cameraPath = 'cameras_05.txt'
-        self._FIVE_RADIAN = 0.0174533
         self.view = None
         rootWidget = Tk()
         rootWidget.withdraw()
@@ -120,21 +119,21 @@ class MyController:
             self.loadModel()
             self.loadCameraFromMultiFile()
         elif Key ==b'x':
-            self.model.rotate_X(self._FIVE_RADIAN)
+            self.model.rotate_X(5)
         elif Key ==b'X':
-            self.model.rotate_X(-self._FIVE_RADIAN)
+            self.model.rotate_X(-5)
         elif Key ==b'y':
-            self.model.rotate_Y(self._FIVE_RADIAN)
+            self.model.rotate_Y(5)
         elif Key ==b'Y':
-            self.model.rotate_Y(-self._FIVE_RADIAN)
+            self.model.rotate_Y(-5)
         elif Key ==b'z':
-            self.model.rotate_Z(self._FIVE_RADIAN)
+            self.model.rotate_Z(5)
         elif Key ==b'Z':
-            self.model.rotate_Z(-self._FIVE_RADIAN)
+            self.model.rotate_Z(-5)
         elif Key ==b's':
-            self.model.nonuniform_scale(1.05)
+            self.model.nonuniform_scale(1.05,1.05,1.05)
         elif Key ==b'S':
-            self.model.nonuniform_scale(1/1.05)
+            self.model.nonuniform_scale(1/1.05,1/1.05,1/1.05)
         elif Key ==b'f':
             for camera in self.cameras:
                 camera.moveEyeTowardsLookat(0.05)
