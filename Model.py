@@ -161,19 +161,19 @@ class Model:
                                 drawModel.verticies[triangle[3]][2])
             #TODO update this to draw actual bezier stuff
             glEnd()
-            glBegin(GL_TRIANGLES)
-            color = 0
-            colorScale = 1.0/len(self.bezierTriangles)
-            for triangle in self.bezierTriangles:
-                color = (color+colorScale)
-                glColor3f(color,color,color)
-                glVertex3f(triangle[0],triangle[1],triangle[2])
-                glVertex3f(triangle[3],triangle[4],triangle[5])
-                glVertex3f(triangle[6],triangle[7],triangle[8])
-            #Here draw the cury stuff
+        glBegin(GL_TRIANGLES)
+        color = 0
+        colorScale = 1.0/len(self.bezierTriangles)
+        for triangle in self.bezierTriangles:
+            color = (color+colorScale)
+            glColor3f(color,color,color)
+            glVertex3f(triangle[0],triangle[1],triangle[2])
+            glVertex3f(triangle[3],triangle[4],triangle[5])
+            glVertex3f(triangle[6],triangle[7],triangle[8])
+        #Here draw the cury stuff
 
 
-            glEnd()
+        glEnd()
         glEndList()
 
 
