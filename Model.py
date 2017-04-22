@@ -5,6 +5,7 @@ from OpenGL.GLU import *
 from OpenGL.GLUT import *
 import math
 import random
+import numpy as np
 
 
 class Model:
@@ -15,7 +16,12 @@ class Model:
         self.colors = []
         self.scale = [1,1,1]
         self.rotate = [0,0,0]
+        self.patches = []
+        self.resolution = None
+        #format is [x0,y0,z0,x1,y1,y1,x2,y2,z2][....]
+        self.bezierTriangles = []
         f = open(filePath, 'r')
+        patch = []
         try:
             for line in f:
                 splitLine = line.split()
@@ -42,11 +48,39 @@ class Model:
                     for index in range(1,len(splitLine)):
                         triangle.append(int(splitLine[index])-1)
                     self.triangles.append(triangle)
+                if splitLine[0] == "n":
+                    self.resolution = int(splitLine[1])
+                if splitLine[0] == "b":
+                    patch.append([float(splitLine[1]),float(splitLine[2]),float(splitLine[3])])
+                    if (len(patch)==16):
+                        gbx = np.matrix([[patch[0][0],patch[1][0],patch[2][0],patch[3][0]],
+                                         [patch[4][0],patch[5][0],patch[6][0],patch[7][0]],
+                                         [patch[8][0],patch[9][0],patch[10][0],patch[11][0]],
+                                         [patch[12][0],patch[3][0],patch[14][0],patch[15][0]]])
+
+                        gby = np.matrix([[patch[0][1],patch[1][1],patch[2][1],patch[3][1]],
+                                         [patch[4][1],patch[5][1],patch[6][1],patch[7][1]],
+                                         [patch[8][1],patch[9][1],patch[11][1],patch[11][1]],
+                                         [patch[12][1],patch[3][1],patch[14][1],patch[15][1]]])
+
+                        gbz = np.matrix([[patch[0][2],patch[1][2],patch[2][2],patch[3][2]],
+                                         [patch[4][2],patch[5][2],patch[6][2],patch[7][2]],
+                                         [patch[8][2],patch[9][2],patch[12][2],patch[11][2]],
+                                         [patch[12][2],patch[3][2],patch[14][2],patch[15][2]]])
+                        patch = [gbx,gby,gbz]
+                        self.patches.append(patch)
+                        patch = []
+
 
         except IOError as e:
             print ("could not read Model error")
         finally:
+            for patch in self.patches:
+                print("new patch")
+                for item in patch:
+                    print(item)
             f.close()
+            self.mapBezier()
 
 
     def rotate_X(self,theta):
@@ -89,42 +123,53 @@ class Model:
         glRotatef(self.rotate[2],0,0,1)
         glScalef(self.scale[0],self.scale[1],self.scale[2])
 
-        if(len(drawModel.triangles[0])==3):
-            glBegin(GL_TRIANGLES)
-            for index in range(len(drawModel.triangles)):
-                triangle = drawModel.triangles[index]
-                color = self.colors[index]
-                glColor3f(color[0],color[1],color[2])
-                glVertex3f(drawModel.verticies[triangle[0]][0],
-                            drawModel.verticies[triangle[0]][1],
-                            drawModel.verticies[triangle[0]][2])
-                glVertex3f(drawModel.verticies[triangle[1]][0],
-                            drawModel.verticies[triangle[1]][1],
-                            drawModel.verticies[triangle[1]][2])
-                glVertex3f(drawModel.verticies[triangle[2]][0],
-                            drawModel.verticies[triangle[2]][1],
-                            drawModel.verticies[triangle[2]][2])
+        if(drawModel.triangles!=[]):
+            #There is a normal model here. Draw it.
+            if(len(drawModel.triangles[0])==3):
+                glBegin(GL_TRIANGLES)
+                for index in range(len(drawModel.triangles)):
+                    triangle = drawModel.triangles[index]
+                    color = self.colors[index]
+                    glColor3f(color[0],color[1],color[2])
+                    glVertex3f(drawModel.verticies[triangle[0]][0],
+                                drawModel.verticies[triangle[0]][1],
+                                drawModel.verticies[triangle[0]][2])
+                    glVertex3f(drawModel.verticies[triangle[1]][0],
+                                drawModel.verticies[triangle[1]][1],
+                                drawModel.verticies[triangle[1]][2])
+                    glVertex3f(drawModel.verticies[triangle[2]][0],
+                                drawModel.verticies[triangle[2]][1],
+                                drawModel.verticies[triangle[2]][2])
 
-        else:
-            glBegin(GL_QUADS)
-            for index in range(len(drawModel.triangles)):
-                triangle = drawModel.triangles[index]
-                color = self.colors[index]
-                glColor3f(color[0],color[1],color[2])
-                glVertex3f(drawModel.verticies[triangle[0]][0],
-                            drawModel.verticies[triangle[0]][1],
-                            drawModel.verticies[triangle[0]][2])
-                glVertex3f(drawModel.verticies[triangle[1]][0],
-                            drawModel.verticies[triangle[1]][1],
-                            drawModel.verticies[triangle[1]][2])
-                glVertex3f(drawModel.verticies[triangle[2]][0],
-                            drawModel.verticies[triangle[2]][1],
-                            drawModel.verticies[triangle[2]][2])
-                glVertex3f(drawModel.verticies[triangle[3]][0],
-                            drawModel.verticies[triangle[3]][1],
-                            drawModel.verticies[triangle[3]][2])
+            else:
+                glBegin(GL_QUADS)
+                for index in range(len(drawModel.triangles)):
+                    triangle = drawModel.triangles[index]
+                    color = self.colors[index]
+                    glColor3f(color[0],color[1],color[2])
+                    glVertex3f(drawModel.verticies[triangle[0]][0],
+                                drawModel.verticies[triangle[0]][1],
+                                drawModel.verticies[triangle[0]][2])
+                    glVertex3f(drawModel.verticies[triangle[1]][0],
+                                drawModel.verticies[triangle[1]][1],
+                                drawModel.verticies[triangle[1]][2])
+                    glVertex3f(drawModel.verticies[triangle[2]][0],
+                                drawModel.verticies[triangle[2]][1],
+                                drawModel.verticies[triangle[2]][2])
+                    glVertex3f(drawModel.verticies[triangle[3]][0],
+                                drawModel.verticies[triangle[3]][1],
+                                drawModel.verticies[triangle[3]][2])
+            #TODO update this to draw actual bezier stuff
+            glEnd()
+            glBegin(GL_POINTS)
+            for patch in self.bezierTriangles:
+                for row in patch:
+                    for point in row:
+                        glVertex3f(point[0],point[1],point[2])
+            #Here draw the cury stuff
 
-        glEnd()
+
+            glEnd()
         glEndList()
 
 
@@ -148,3 +193,52 @@ class Model:
         glVertex3f(0,0,2)
         glEnd() 
         glEndList()    
+    
+
+    def mapBezier(self):
+        self.bezierTriangles = []
+        for patch in self.patches:
+            self.mapBezierPatch(patch)
+
+
+    def mapBezierPatch(self,patch):
+        #[[xyz of x0,y0],[xyz of x1,y0]...
+        bezierCoordinates = []
+        increment = 1.0/self.resolution
+        for ySquareIndex in range(self.resolution+1):
+            bezierLine = []
+            for xSquareIndex in range(self.resolution+1):
+                #create weights
+                #find U (0-1)
+                xWeight = xSquareIndex*increment
+                yWeight = ySquareIndex*increment
+                bi1 = (1-xWeight)**3
+                bi2 = 3*xWeight*(1-xWeight)**2
+                bi3 = 3*xWeight**2*(1-xWeight)
+                bi4 = xWeight**3
+                bi = [bi1,bi2,bi3,bi4]
+                bj1 = (1-yWeight)**3
+                bj2 = 3*yWeight*(1-yWeight)**2
+                bj3 = 3*yWeight*(1-yWeight)**2
+                bj4 = yWeight**3
+                bj = [bj1,bj2,bj3,bj4]
+                print(xWeight)
+                print(yWeight)
+                #calculate the sum
+                point = [0,0,0]
+                for x in range(4):
+                    for y in range(4):
+                        #patch[0]= x bezier
+                        point[0] += patch[0][x,y] * bi[x] * bj[y]
+                        point[1] += patch[1][x,y] * bi[x] * bj[y]
+                        point[2] += patch[2][x,y] * bi[x] * bj[y]
+                bezierLine.append(point)
+            bezierCoordinates.append(bezierLine)
+        self.bezierTriangles.append(bezierCoordinates)
+
+            
+
+
+
+
+

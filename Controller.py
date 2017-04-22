@@ -9,8 +9,8 @@ class MyController:
     def __init__(self):
         self.model = None
         self.cameras = None
-        self.modelPath = './inputFiles/teapot.txt'
-        self.cameraPath = 'cameras_05.txt'
+        self.modelPath = './inputFiles/teapot_06.txt'
+        self.cameraPath = 'cameras_06.txt'
         self.view = None
         rootWidget = Tk()
         rootWidget.withdraw()
