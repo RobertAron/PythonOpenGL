@@ -75,10 +75,6 @@ class Model:
         except IOError as e:
             print ("could not read Model error")
         finally:
-            for patch in self.patches:
-                print("new patch")
-                for item in patch:
-                    print(item)
             f.close()
             self.mapBezier()
 
