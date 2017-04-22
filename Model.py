@@ -56,17 +56,17 @@ class Model:
                         gbx = np.matrix([[patch[0][0],patch[1][0],patch[2][0],patch[3][0]],
                                          [patch[4][0],patch[5][0],patch[6][0],patch[7][0]],
                                          [patch[8][0],patch[9][0],patch[10][0],patch[11][0]],
-                                         [patch[12][0],patch[3][0],patch[14][0],patch[15][0]]])
+                                         [patch[12][0],patch[13][0],patch[14][0],patch[15][0]]])
 
                         gby = np.matrix([[patch[0][1],patch[1][1],patch[2][1],patch[3][1]],
                                          [patch[4][1],patch[5][1],patch[6][1],patch[7][1]],
                                          [patch[8][1],patch[9][1],patch[11][1],patch[11][1]],
-                                         [patch[12][1],patch[3][1],patch[14][1],patch[15][1]]])
+                                         [patch[12][1],patch[13][1],patch[14][1],patch[15][1]]])
 
                         gbz = np.matrix([[patch[0][2],patch[1][2],patch[2][2],patch[3][2]],
                                          [patch[4][2],patch[5][2],patch[6][2],patch[7][2]],
                                          [patch[8][2],patch[9][2],patch[12][2],patch[11][2]],
-                                         [patch[12][2],patch[3][2],patch[14][2],patch[15][2]]])
+                                         [patch[12][2],patch[13][2],patch[14][2],patch[15][2]]])
                         patch = [gbx,gby,gbz]
                         self.patches.append(patch)
                         patch = []
@@ -161,11 +161,15 @@ class Model:
                                 drawModel.verticies[triangle[3]][2])
             #TODO update this to draw actual bezier stuff
             glEnd()
-            glBegin(GL_POINTS)
-            for patch in self.bezierTriangles:
-                for row in patch:
-                    for point in row:
-                        glVertex3f(point[0],point[1],point[2])
+            glBegin(GL_TRIANGLES)
+            color = 0
+            colorScale = 1.0/len(self.bezierTriangles)
+            for triangle in self.bezierTriangles:
+                color = (color+colorScale)
+                glColor3f(color,color,color)
+                glVertex3f(triangle[0],triangle[1],triangle[2])
+                glVertex3f(triangle[3],triangle[4],triangle[5])
+                glVertex3f(triangle[6],triangle[7],triangle[8])
             #Here draw the cury stuff
 
 
@@ -197,8 +201,34 @@ class Model:
 
     def mapBezier(self):
         self.bezierTriangles = []
+        bezierBlock = []
         for patch in self.patches:
-            self.mapBezierPatch(patch)
+            bezierBlock.append(self.mapBezierPatch(patch))
+        for patch in bezierBlock:
+            for yIndex in range(len(patch[0])-1):
+                for xIndex in range(len(patch[0])-1):
+                    #make two triangles based off of this point.
+                    #format is [x0,y0,z0,x1,y1,y1,x2,y2,z2][....]
+                    x0 = patch[xIndex][yIndex][0]
+                    y0 = patch[xIndex][yIndex][1]
+                    z0 = patch[xIndex][yIndex][2]
+                    x1 = patch[xIndex+1][yIndex][0]
+                    y1 = patch[xIndex+1][yIndex][1]
+                    z1 = patch[xIndex+1][yIndex][2]
+                    x2 = patch[xIndex][yIndex+1][0]
+                    y2 = patch[xIndex][yIndex+1][1]
+                    z2 = patch[xIndex][yIndex+1][2]
+                    x3 = patch[xIndex+1][yIndex+1][0]
+                    y3 = patch[xIndex+1][yIndex+1][1]
+                    z3 = patch[xIndex+1][yIndex+1][2]
+
+                    triangle1 = [x0,y0,z0,x1,y1,z1,x3,y3,z3]
+                    triangle2 = [x0,y0,z0,x2,y2,z2,x3,y3,z3]
+
+                    self.bezierTriangles.append(triangle1)
+                    self.bezierTriangles.append(triangle2)
+
+            
 
 
     def mapBezierPatch(self,patch):
@@ -219,11 +249,9 @@ class Model:
                 bi = [bi1,bi2,bi3,bi4]
                 bj1 = (1-yWeight)**3
                 bj2 = 3*yWeight*(1-yWeight)**2
-                bj3 = 3*yWeight*(1-yWeight)**2
+                bj3 = 3*yWeight**2*(1-yWeight)
                 bj4 = yWeight**3
                 bj = [bj1,bj2,bj3,bj4]
-                print(xWeight)
-                print(yWeight)
                 #calculate the sum
                 point = [0,0,0]
                 for x in range(4):
@@ -234,7 +262,7 @@ class Model:
                         point[2] += patch[2][x,y] * bi[x] * bj[y]
                 bezierLine.append(point)
             bezierCoordinates.append(bezierLine)
-        self.bezierTriangles.append(bezierCoordinates)
+        return bezierCoordinates
 
             
 

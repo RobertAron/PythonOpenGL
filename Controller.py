@@ -154,4 +154,12 @@ class MyController:
         elif Key == b'p':
             for camera in self.cameras:
                 camera.switchViewStyle()
+        elif Key == b'r':
+            if(self.model.resolution>1):
+                self.model.resolution-=1
+                self.model.mapBezier()
+        elif Key == b'R':
+            if(self.model.resolution<100):
+                self.model.resolution+=1
+                self.model.mapBezier()
         self.view.display()
